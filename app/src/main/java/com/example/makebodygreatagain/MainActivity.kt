@@ -8,6 +8,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
@@ -42,30 +43,54 @@ fun GreetingPreview() {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BodyBuilding() {
-    // This state list will hold the state for each exercise, which gets passed down to the ExerciseList
-    val exercisesState = remember { DataSource.strengthExercises.map { mutableStateOf(it) }.toMutableStateList() }
+    // This state determines which exercises to display
+    var exerciseType by remember { mutableStateOf(ExerciseType.Endurance) }
 
+    Column {
+        Row {
+            Button(onClick = { exerciseType = ExerciseType.Endurance }) {
+                Text(text = "Endurance")
+            }
+            Button(onClick = { exerciseType = ExerciseType.Strength }) {
+                Text(text = "Strength")
+            }
+        }
+
+        // Pass the exercises based on the current exercise type without reinitializing them
+        MyLayout(exerciseType, globalExercisesState.value[exerciseType]!!)
+    }
+}
+
+
+val globalExercisesState = mutableStateOf(
+    mapOf(
+        ExerciseType.Endurance to DataSource.enduranceExercises.map { mutableStateOf(it) }.toMutableStateList(),
+        ExerciseType.Strength to DataSource.strengthExercises.map { mutableStateOf(it) }.toMutableStateList()
+    )
+)
+
+enum class ExerciseType {
+    Endurance,
+    Strength
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun MyLayout(exerciseType: ExerciseType, exercisesState: List<MutableState<Exercise>>) {
     Scaffold(
         topBar = {
-            // modifier = Modifier,
-            TopAppBar(
-                title = { Text("My New Body") }
-            )
+            TopAppBar(title = { Text("My New Body") })
         },
-        content = {  paddingValues ->
-            Column (
-                modifier = Modifier.padding(paddingValues)
-            ){
+        content = { paddingValues ->
+            Column(modifier = Modifier.padding(paddingValues)) {
                 ExerciseCounters(exercises = exercisesState)
                 ExerciseList(exerciseState = exercisesState)
             }
         }
     )
 }
-
 
 @Composable
 fun ExerciseCounters(exercises: List<MutableState<Exercise>>) {
