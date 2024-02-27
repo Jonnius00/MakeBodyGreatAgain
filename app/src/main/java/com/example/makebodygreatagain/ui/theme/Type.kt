@@ -23,7 +23,7 @@ val Typography = Typography(
 */
 val Typography = Typography(
     bodyLarge = TextStyle(
-        fontFamily = FontFamily.Default,
+        fontFamily = Montserrat,
         fontWeight = FontWeight.Normal,
         fontSize = 16.sp,
         lineHeight = 24.sp,
