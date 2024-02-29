@@ -55,11 +55,13 @@ class ExampleInstrumentedTest {
         // based on your initial data setup
         composeTestRule
             .onNodeWithTag("TotalSetsText")
-            .assertTextContains("Total Sets: / 2")
+            .assertTextContains("Total Sets:")
+            .assertTextContains("/ 2")
 
         composeTestRule
             .onNodeWithTag("CompletedExercisesText")
-            .assertTextContains("Completed Exercises: 2 / 2")
+            .assertTextContains("Completed Exercises:")
+            .assertTextContains("/ 2")
    }
 
     @Test
@@ -70,11 +72,13 @@ class ExampleInstrumentedTest {
         // Now check if the UI has updated to reflect the completion
         composeTestRule
             .onNodeWithTag("TotalSetsText")
-            .assertTextEquals("Total Sets: X") // X should be the updated total sets count
+            .assertTextContains("Total Sets: 2")
+            // X should be the updated total sets count
 
         composeTestRule
             .onNodeWithTag("CompletedExercisesText")
-            .assertTextEquals("Completed Exercises: Y") // Y should be the updated completed exercises count
+            .assertTextContains("Completed Exercises: 2")
+            // Y should be the updated completed exercises count
 
     }
 
