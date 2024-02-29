@@ -14,15 +14,10 @@ val Montserrat = FontFamily(
     Font(R.font.montserrat_medium, FontWeight.W500),
     Font(R.font.montserrat_semibold, FontWeight.W600)
 )
-// Set of Material typography styles to start with
-/*
-val Typography = Typography(
-    defaultFontFamily = Montserrat,
-    // Define other typography parameters if needed
-)
-*/
+
 val Typography = Typography(
     bodyLarge = TextStyle(
+        // Set of Material typography styles to start with
         fontFamily = Montserrat,
         fontWeight = FontWeight.Normal,
         fontSize = 16.sp,
