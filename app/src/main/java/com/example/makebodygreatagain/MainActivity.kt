@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.runtime.*
+import androidx.compose.ui.platform.testTag
 import com.example.makebodygreatagain.data.DataSource
 import com.example.makebodygreatagain.data.Exercise
 import com.example.makebodygreatagain.ui.theme.MakeBodyGreatAgainTheme
@@ -47,11 +48,19 @@ fun BodyBuilding() {
     var exerciseType by remember { mutableStateOf(ExerciseType.Endurance) }
 
     Column {
-        Row {
-            Button(onClick = { exerciseType = ExerciseType.Endurance }) {
+        Row (modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceAround)
+        {
+            Button(
+                onClick = { exerciseType = ExerciseType.Endurance },
+                modifier = Modifier.testTag("EnduranceButton"))
+            {
                 Text(text = "Endurance")
             }
-            Button(onClick = { exerciseType = ExerciseType.Strength }) {
+            Button(
+                onClick = { exerciseType = ExerciseType.Strength },
+                modifier = Modifier.testTag("StrengthButton"))
+            {
                 Text(text = "Strength")
             }
         }
@@ -79,7 +88,7 @@ enum class ExerciseType {
 fun MyLayout(exerciseType: ExerciseType, exercisesState: List<MutableState<Exercise>>) {
     Scaffold(
         topBar = {
-            TopAppBar(title = { Text("My New Body") })
+            TopAppBar(title = { Text("The story of my New body") })
         },
         content = { paddingValues ->
             Column(modifier = Modifier.padding(paddingValues)) {
@@ -96,7 +105,9 @@ fun ExerciseCounters(exercises: List<MutableState<Exercise>>) {
     val completedSets = exercises.sumOf { it.value.setsCompleted }
     val completedExercises = exercises.count { it.value.setsCompleted == it.value.sets }
 
-    Row(modifier = Modifier.padding(8.dp), horizontalArrangement = Arrangement.SpaceBetween) {
+    // Row(modifier = Modifier.padding(8.dp), horizontalArrangement = Arrangement.SpaceBetween)
+    Column (modifier = Modifier.padding(8.dp), horizontalAlignment = Alignment.Start)
+    {
         Text("Total Sets: $completedSets / $totalSets")
         Text("Completed Exercises: $completedExercises / ${exercises.size}")
     }
