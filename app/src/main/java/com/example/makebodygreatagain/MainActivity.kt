@@ -9,6 +9,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.outlined.ArrowDropDown
@@ -21,6 +22,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import com.example.makebodygreatagain.data.DataSource
 import com.example.makebodygreatagain.data.Exercise
 import com.example.makebodygreatagain.ui.theme.MakeBodyGreatAgainTheme
@@ -62,32 +64,13 @@ fun GreetingPreview() {
 
 @Composable
 fun BodyBuilding(globalExercisesState: Map<ExerciseType, List<MutableState<Exercise>>>) {
-    val context = LocalContext.current
-
-    // This state determines which exercises to display
     var exerciseType by remember { mutableStateOf(ExerciseType.Endurance) }
 
-    Column {
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceAround) {
-            Button(
-                onClick = { exerciseType = ExerciseType.Endurance },
-                modifier = Modifier.testTag("EnduranceButton")
-            ) {
-                Text(text = stringResource(id = R.string.exercise_type_endurance))
-            }
-            Button(
-                onClick = { exerciseType = ExerciseType.Strength },
-                modifier = Modifier.testTag("StrengthButton")
-            ) {
-                Text(text = stringResource(id = R.string.exercise_type_strength))
-            }
-        }
-
-        // Pass the exercises based on the current exercise type without reinitializing them
-        val exercisesState = globalExercisesState[exerciseType] ?: emptyList()
-        MyLayout(exerciseType, exercisesState)
-    }
+    // Pass the exercises based on the current exercise type without reinitializing them
+    val exercisesState = globalExercisesState[exerciseType] ?: emptyList()
+    MyLayout(exerciseType = exerciseType, exercisesState = exercisesState, onExerciseTypeChange = { exerciseType = it })
 }
+
 
 enum class ExerciseType {
     Endurance,
@@ -96,19 +79,42 @@ enum class ExerciseType {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MyLayout(exerciseType: ExerciseType, exercisesState: List<MutableState<Exercise>>) {
+fun MyLayout(exerciseType: ExerciseType, exercisesState: List<MutableState<Exercise>>, onExerciseTypeChange: (ExerciseType) -> Unit) {
     Scaffold(
         topBar = {
-            TopAppBar(title = { Text(stringResource(id = R.string.top_bar_title)) })
-        },
-        content = { paddingValues ->
-            Column(modifier = Modifier.padding(paddingValues)) {
-                ExerciseCounters(exercises = exercisesState)
-                ExerciseList(exerciseState = exercisesState)
-            }
+            TopAppBar(title = { Text(stringResource(id = R.string.top_bar_title), modifier = Modifier.fillMaxWidth(), // Ensures the Text composable fills the available width
+                textAlign = TextAlign.Center) })
         }
-    )
+    ) { paddingValues ->
+        Column(modifier = Modifier
+            .padding(paddingValues)
+            .fillMaxSize()) {
+            Row(modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp),
+                horizontalArrangement = Arrangement.SpaceEvenly) {
+                Button(
+                    onClick = { onExerciseTypeChange(ExerciseType.Endurance) },
+                    modifier = Modifier.testTag("EnduranceButton"),
+                    shape = RoundedCornerShape(3.dp) // Making the button rectangular
+                ) {
+                    Text(text = stringResource(id = R.string.exercise_type_endurance))
+                }
+                Button(
+                    onClick = { onExerciseTypeChange(ExerciseType.Strength) },
+                    modifier = Modifier.testTag("StrengthButton"),
+                    shape = RoundedCornerShape(3.dp) // Making the button rectangular
+                ) {
+                    Text(text = stringResource(id = R.string.exercise_type_strength))
+                }
+            }
+
+            ExerciseCounters(exercises = exercisesState)
+            ExerciseList(exerciseState = exercisesState)
+        }
+    }
 }
+
 
 @Composable
 fun ExerciseCounters(exercises: List<MutableState<Exercise>>) {
