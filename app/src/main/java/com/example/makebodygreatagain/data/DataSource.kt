@@ -1,5 +1,8 @@
 package com.example.makebodygreatagain.data
 
+import android.content.Context
+import com.example.makebodygreatagain.R
+
 data class Exercise(
     val name: String,
     val description: String,
@@ -14,22 +17,23 @@ data class TrainingProgram(
     val exercises: List<Exercise>
 )
 
-object DataSource {
+class DataSource(context: Context) {
     val strengthExercises = listOf(
-        Exercise("Bench Press", "Perform 10 repetitions with increasing weight.", "https://uit.no/ivt", 4),
-        Exercise("Shoulder Press", "Perform 12 repetitions with light weights.", "https://uit.no/ivt", 4),
-        // Add more exercises here...
+        Exercise(context.getString(R.string.exercise_bench_press), context.getString(R.string.exercise_bench_press_desc), context.getString(R.string.video_url), 4),
+        Exercise(context.getString(R.string.exercise_shoulder_press), context.getString(R.string.exercise_shoulder_press_desc), context.getString(R.string.video_url), 4),
+        Exercise(context.getString(R.string.exercise_deadlift), context.getString(R.string.exercise_deadlift_desc), context.getString(R.string.video_url), 4),
+        Exercise(context.getString(R.string.exercise_squats), context.getString(R.string.exercise_squats_desc), context.getString(R.string.video_url), 4)
     )
 
     val enduranceExercises = listOf(
-        Exercise("Running", "30 minutes continuous running at a moderate pace.", "https://uit.no/ivt", 1),
-        Exercise("Cycling", "45 minutes of interval training on a stationary bike.", "https://uit.no/ivt", 1),
-        // Add more exercises here...
+        Exercise(context.getString(R.string.exercise_running), context.getString(R.string.exercise_running_desc), context.getString(R.string.video_url), 1),
+        Exercise(context.getString(R.string.exercise_cycling), context.getString(R.string.exercise_cycling_desc), context.getString(R.string.video_url), 1),
+        Exercise(context.getString(R.string.exercise_swimming), context.getString(R.string.exercise_swimming_desc), context.getString(R.string.video_url), 1),
+        Exercise(context.getString(R.string.exercise_rowing), context.getString(R.string.exercise_rowing_desc), context.getString(R.string.video_url), 1)
     )
 
     val programs = listOf(
-        TrainingProgram("Strength", strengthExercises),
-        TrainingProgram("Endurance", enduranceExercises)
+        TrainingProgram(context.getString(R.string.program_strength), strengthExercises),
+        TrainingProgram(context.getString(R.string.program_endurance), enduranceExercises)
     )
 }
-

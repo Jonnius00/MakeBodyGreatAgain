@@ -1,3 +1,36 @@
 <resources>
     <string name="app_name">MakeBodyGreatAgain</string>
+    <string name="exercise_type_endurance">Endurance</string>
+    <string name="exercise_type_strength">Strength</string>
+    <string name="top_bar_title">The story of my New body</string>
+    <string name="total_sets">Total Sets: %1$d / %2$d</string>
+    <string name="completed_exercises">Completed Exercises: %1$d / %2$d</string>
+    <string name="set_number">Set %d</string>
+    <string name="collapse">Collapse</string>
+    <string name="expand">Expand</string>
+
+    <!-- Exercises -->
+    <string name="exercise_bench_press">Bench Press</string>
+    <string name="exercise_bench_press_desc">Perform 10 repetitions with increasing weight.</string>
+    <string name="exercise_shoulder_press">Shoulder Press</string>
+    <string name="exercise_shoulder_press_desc">Perform 12 repetitions with light weights.</string>
+    <string name="exercise_deadlift">Deadlift</string>
+    <string name="exercise_deadlift_desc">Perform 8 repetitions focusing on form.</string>
+    <string name="exercise_squats">Squats</string>
+    <string name="exercise_squats_desc">Perform 12 repetitions with medium weight.</string>
+    <string name="exercise_running">Running</string>
+    <string name="exercise_running_desc">30 minutes continuous running at a moderate pace.</string>
+    <string name="exercise_cycling">Cycling</string>
+    <string name="exercise_cycling_desc">45 minutes of interval training on a stationary bike.</string>
+    <string name="exercise_swimming">Swimming</string>
+    <string name="exercise_swimming_desc">30 minutes of freestyle swimming.</string>
+    <string name="exercise_rowing">Rowing</string>
+    <string name="exercise_rowing_desc">20 minutes of rowing at a steady pace.</string>
+
+    <!-- Programs -->
+    <string name="program_strength">Strength</string>
+    <string name="program_endurance">Endurance</string>
+
+    <!-- Video URL -->
+    <string name="video_url">https://uit.no/ivt</string>
 </resources>

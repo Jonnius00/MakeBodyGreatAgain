@@ -18,65 +18,76 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.runtime.*
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import com.example.makebodygreatagain.data.DataSource
 import com.example.makebodygreatagain.data.Exercise
 import com.example.makebodygreatagain.ui.theme.MakeBodyGreatAgainTheme
+import com.example.makebodygreatagain.data.TrainingProgram
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             MakeBodyGreatAgainTheme {
-                BodyBuilding()
+                BodyBuildingScreen()
             }
         }
     }
+}
+
+@Composable
+fun BodyBuildingScreen() {
+    val context = LocalContext.current
+    val dataSource = remember { DataSource(context) }
+
+    val globalExercisesState = remember {
+        mutableStateOf(
+            mapOf(
+                ExerciseType.Endurance to dataSource.enduranceExercises.map { mutableStateOf(it) }.toMutableStateList(),
+                ExerciseType.Strength to dataSource.strengthExercises.map { mutableStateOf(it) }.toMutableStateList()
+            )
+        )
+    }
+
+    BodyBuilding(globalExercisesState = globalExercisesState.value)
 }
 
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
-    MakeBodyGreatAgainTheme {
-        BodyBuilding()
-    }
+    BodyBuildingScreen()  // This should call BodyBuildingScreen to ensure context is available
 }
 
 @Composable
-fun BodyBuilding() {
+fun BodyBuilding(globalExercisesState: Map<ExerciseType, List<MutableState<Exercise>>>) {
+    val context = LocalContext.current
+
     // This state determines which exercises to display
     var exerciseType by remember { mutableStateOf(ExerciseType.Endurance) }
 
     Column {
-        Row (modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceAround)
-        {
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceAround) {
             Button(
                 onClick = { exerciseType = ExerciseType.Endurance },
-                modifier = Modifier.testTag("EnduranceButton"))
-            {
-                Text(text = "Endurance")
+                modifier = Modifier.testTag("EnduranceButton")
+            ) {
+                Text(text = stringResource(id = R.string.exercise_type_endurance))
             }
             Button(
                 onClick = { exerciseType = ExerciseType.Strength },
-                modifier = Modifier.testTag("StrengthButton"))
-            {
-                Text(text = "Strength")
+                modifier = Modifier.testTag("StrengthButton")
+            ) {
+                Text(text = stringResource(id = R.string.exercise_type_strength))
             }
         }
 
         // Pass the exercises based on the current exercise type without reinitializing them
-        MyLayout(exerciseType, globalExercisesState.value[exerciseType]!!)
+        val exercisesState = globalExercisesState[exerciseType] ?: emptyList()
+        MyLayout(exerciseType, exercisesState)
     }
 }
-
-
-val globalExercisesState = mutableStateOf(
-    mapOf(
-        ExerciseType.Endurance to DataSource.enduranceExercises.map { mutableStateOf(it) }.toMutableStateList(),
-        ExerciseType.Strength to DataSource.strengthExercises.map { mutableStateOf(it) }.toMutableStateList()
-    )
-)
 
 enum class ExerciseType {
     Endurance,
@@ -88,7 +99,7 @@ enum class ExerciseType {
 fun MyLayout(exerciseType: ExerciseType, exercisesState: List<MutableState<Exercise>>) {
     Scaffold(
         topBar = {
-            TopAppBar(title = { Text("The story of my New body") })
+            TopAppBar(title = { Text(stringResource(id = R.string.top_bar_title)) })
         },
         content = { paddingValues ->
             Column(modifier = Modifier.padding(paddingValues)) {
@@ -108,8 +119,8 @@ fun ExerciseCounters(exercises: List<MutableState<Exercise>>) {
     // Row(modifier = Modifier.padding(8.dp), horizontalArrangement = Arrangement.SpaceBetween)
     Column (modifier = Modifier.padding(8.dp), horizontalAlignment = Alignment.Start)
     {
-        Text("Total Sets: $completedSets / $totalSets")
-        Text("Completed Exercises: $completedExercises / ${exercises.size}")
+        Text(stringResource(R.string.total_sets, completedSets, totalSets))
+        Text(stringResource(R.string.completed_exercises, completedExercises, exercises.size))
     }
 }
 
