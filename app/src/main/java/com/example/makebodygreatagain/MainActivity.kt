@@ -97,9 +97,13 @@ fun GreetingPreview() {
 fun BodyBuilding(globalExercisesState: Map<ExerciseType, List<MutableState<Exercise>>>) {
     var exerciseType by remember { mutableStateOf(ExerciseType.Endurance) }
 
-    // Pass the exercises based on the current exercise type without reinitializing them
-    val exercisesState = globalExercisesState[exerciseType] ?: emptyList()
-    MyLayout(exerciseType = exerciseType, exercisesState = exercisesState, onExerciseTypeChange = { exerciseType = it })
+    MyLayout(
+        exerciseType = exerciseType,
+        exercisesState = globalExercisesState,
+        onExerciseTypeChange = { newExerciseType ->
+            exerciseType = newExerciseType
+        }
+    )
 }
 
 
@@ -110,57 +114,70 @@ enum class ExerciseType {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MyLayout(exerciseType: ExerciseType, exercisesState: List<MutableState<Exercise>>, onExerciseTypeChange: (ExerciseType) -> Unit) {
+fun MyLayout(
+    exerciseType: ExerciseType,
+    exercisesState: Map<ExerciseType, List<MutableState<Exercise>>>,
+    onExerciseTypeChange: (ExerciseType) -> Unit
+) {
     Scaffold(
         topBar = {
-            Row(modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp),
-                horizontalArrangement = Arrangement.SpaceEvenly) {
-                AnimatedGifWebView(gifUrl = "https://c.tenor.com/T4fluv4fprIAAAAC/tenor.gif", modifier = Modifier.width(63.dp))
-
-                TopAppBar(title = {
-                    Text(stringResource(id = R.string.top_bar_title),
-                    textAlign = TextAlign.Center) })
-            }
+            TopAppBar(title = {
+                Text(
+                    stringResource(id = R.string.top_bar_title),
+                    textAlign = TextAlign.Center
+                )
+            })
         }
     ) { paddingValues ->
         Column(modifier = Modifier
             .padding(paddingValues)
-            .fillMaxSize()) {
-            Row(modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp),
-                horizontalArrangement = Arrangement.SpaceEvenly) {
+            .fillMaxSize()
+        ) {
+            // Track the currently selected exercise type
+            var selectedExerciseType by remember { mutableStateOf(exerciseType) }
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp),
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
                 Button(
-                    onClick = { onExerciseTypeChange(ExerciseType.Endurance) },
+                    onClick = {
+                        selectedExerciseType = ExerciseType.Endurance
+                        onExerciseTypeChange(selectedExerciseType)
+                    },
                     modifier = Modifier
                         .testTag("EnduranceButton")
                         .width(185.dp),
                     shape = RoundedCornerShape(3.dp),
-                    enabled = true
+                    enabled = selectedExerciseType != ExerciseType.Endurance
                 ) {
                     Text(text = stringResource(id = R.string.exercise_type_endurance))
                 }
                 Button(
-                    onClick = { onExerciseTypeChange(ExerciseType.Strength) },
+                    onClick = {
+                        selectedExerciseType = ExerciseType.Strength
+                        onExerciseTypeChange(selectedExerciseType)
+                    },
                     modifier = Modifier
                         .testTag("StrengthButton")
                         .width(185.dp),
                     shape = RoundedCornerShape(3.dp),
-                    enabled = true  // EnduranceButton is disabled at startup
+                    enabled = selectedExerciseType != ExerciseType.Strength
                 ) {
                     Text(text = stringResource(id = R.string.exercise_type_strength))
                 }
             }
 
-            ExerciseCounters(exercises = exercisesState)
-            ExerciseList(exerciseState = exercisesState)
-
-            Spacer(modifier = Modifier.weight(1f))
+            // Display the exercises for the selected type
+            val currentExercises = exercisesState[selectedExerciseType] ?: emptyList()
+            ExerciseCounters(exercises = currentExercises)
+            ExerciseList(exerciseState = currentExercises)
         }
     }
 }
+
 
 @Composable
 fun AnimatedGifWebView(modifier: Modifier = Modifier, gifUrl: String) {
