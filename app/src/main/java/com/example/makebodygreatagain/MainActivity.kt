@@ -117,7 +117,7 @@ fun MyLayout(exerciseType: ExerciseType, exercisesState: List<MutableState<Exerc
                 .fillMaxWidth()
                 .padding(8.dp),
                 horizontalArrangement = Arrangement.SpaceEvenly) {
-                AnimatedGifWebView(gifUrl = "https://c.tenor.com/T4fluv4fprIAAAAC/tenor.gif", modifier = Modifier.width(60.dp))
+                AnimatedGifWebView(gifUrl = "https://c.tenor.com/T4fluv4fprIAAAAC/tenor.gif", modifier = Modifier.width(63.dp))
 
                 TopAppBar(title = {
                     Text(stringResource(id = R.string.top_bar_title),
@@ -170,7 +170,7 @@ fun AnimatedGifWebView(modifier: Modifier = Modifier, gifUrl: String) {
                 webViewClient = WebViewClient()
 
                 // Enable JavaScript if needed
-                settings.javaScriptEnabled = true
+                // settings.javaScriptEnabled = true
 
                 // GIF within an HTML string to control its size
                 val htmlString = """
