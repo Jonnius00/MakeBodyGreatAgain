@@ -87,12 +87,6 @@ fun BodyBuildingScreen() {
     BodyBuilding(globalExercisesState = globalExercisesState.value)
 }
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    BodyBuildingScreen()  // This should call BodyBuildingScreen to ensure context is available
-}
-
 @Composable
 fun BodyBuilding(globalExercisesState: Map<ExerciseType, List<MutableState<Exercise>>>) {
     var exerciseType by remember { mutableStateOf(ExerciseType.Endurance) }
@@ -121,12 +115,16 @@ fun MyLayout(
 ) {
     Scaffold(
         topBar = {
-            TopAppBar(title = {
-                Text(
-                    stringResource(id = R.string.top_bar_title),
-                    textAlign = TextAlign.Center
-                )
-            })
+            Row(modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp),
+                horizontalArrangement = Arrangement.SpaceEvenly) {
+                AnimatedGifWebView(gifUrl = "https://c.tenor.com/T4fluv4fprIAAAAC/tenor.gif", modifier = Modifier.width(63.dp))
+
+                TopAppBar(title = {
+                    Text(stringResource(id = R.string.top_bar_title),
+                        textAlign = TextAlign.Center) })
+            }
         }
     ) { paddingValues ->
         Column(modifier = Modifier

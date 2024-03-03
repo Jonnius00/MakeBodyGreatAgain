@@ -13,4 +13,5 @@
 .externalNativeBuild
 .cxx
 local.properties
-
+.idea/androidTestResultsUserPreferences.xml
+.idea/deploymentTargetDropDown.xml
