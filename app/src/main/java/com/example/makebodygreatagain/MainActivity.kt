@@ -27,6 +27,17 @@ import com.example.makebodygreatagain.data.DataSource
 import com.example.makebodygreatagain.data.Exercise
 import com.example.makebodygreatagain.ui.theme.MakeBodyGreatAgainTheme
 import com.example.makebodygreatagain.data.TrainingProgram
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.layout.ContentScale
+import coil.compose.rememberImagePainter
+import com.example.makebodygreatagain.R
+import androidx.compose.ui.viewinterop.AndroidView
+import android.webkit.WebView
+import android.webkit.WebViewClient
+import androidx.compose.ui.draw.scale
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -111,8 +122,48 @@ fun MyLayout(exerciseType: ExerciseType, exercisesState: List<MutableState<Exerc
 
             ExerciseCounters(exercises = exercisesState)
             ExerciseList(exerciseState = exercisesState)
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            // GIF at the bottom
+            AnimatedGifWebView(
+                modifier = Modifier.scale(1F),
+                gifUrl = "https://c.tenor.com/vADKbpqeAtYAAAAd/tenor.gif"
+            )
         }
     }
+}
+
+@Composable
+fun AnimatedGifWebView(modifier: Modifier = Modifier, gifUrl: String) {
+    AndroidView(
+        factory = { context ->
+            WebView(context).apply {
+                webViewClient = WebViewClient()
+
+                // Enable JavaScript if needed
+                settings.javaScriptEnabled = true
+
+                // GIF within an HTML string to control its size
+                val htmlString = """
+                    <html>
+                    <head>
+                        <style type="text/css">
+                            body { margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; }
+                            img { width: 100%; } /* Adjust the width as needed */
+                        </style>
+                    </head>
+                    <body>
+                        <img src="$gifUrl" />
+                    </body>
+                    </html>
+                """.trimIndent()
+
+                loadDataWithBaseURL(null, htmlString, "text/html", "UTF-8", null)
+            }
+        },
+        modifier = modifier
+    )
 }
 
 
