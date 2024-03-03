@@ -93,7 +93,7 @@ enum class ExerciseType {
 fun MyLayout(exerciseType: ExerciseType, exercisesState: List<MutableState<Exercise>>, onExerciseTypeChange: (ExerciseType) -> Unit) {
     Scaffold(
         topBar = {
-            TopAppBar(title = { Text(stringResource(id = R.string.top_bar_title), modifier = Modifier.fillMaxWidth(), // Ensures the Text composable fills the available width
+            TopAppBar(title = { Text(stringResource(id = R.string.top_bar_title),
                 textAlign = TextAlign.Center) })
         }
     ) { paddingValues ->
@@ -106,15 +106,17 @@ fun MyLayout(exerciseType: ExerciseType, exercisesState: List<MutableState<Exerc
                 horizontalArrangement = Arrangement.SpaceEvenly) {
                 Button(
                     onClick = { onExerciseTypeChange(ExerciseType.Endurance) },
-                    modifier = Modifier.testTag("EnduranceButton"),
-                    shape = RoundedCornerShape(3.dp) // Making the button rectangular
+                    modifier = Modifier.testTag("EnduranceButton")
+                        .width(185.dp),
+                    shape = RoundedCornerShape(3.dp),
                 ) {
                     Text(text = stringResource(id = R.string.exercise_type_endurance))
                 }
                 Button(
                     onClick = { onExerciseTypeChange(ExerciseType.Strength) },
-                    modifier = Modifier.testTag("StrengthButton"),
-                    shape = RoundedCornerShape(3.dp) // Making the button rectangular
+                    modifier = Modifier.testTag("StrengthButton")
+                        .width(185.dp),
+                    shape = RoundedCornerShape(3.dp)
                 ) {
                     Text(text = stringResource(id = R.string.exercise_type_strength))
                 }
@@ -127,7 +129,7 @@ fun MyLayout(exerciseType: ExerciseType, exercisesState: List<MutableState<Exerc
 
             // GIF at the bottom
             AnimatedGifWebView(
-                modifier = Modifier.scale(1F),
+                modifier = Modifier.scale(0.96F),
                 gifUrl = "https://c.tenor.com/vADKbpqeAtYAAAAd/tenor.gif"
             )
         }
