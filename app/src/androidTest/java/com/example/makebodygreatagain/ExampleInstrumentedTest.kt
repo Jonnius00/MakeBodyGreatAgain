@@ -5,6 +5,7 @@ import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.assertTextContains
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.performClick
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
@@ -39,37 +40,44 @@ class ExampleInstrumentedTest {
         composeTestRule
             .onNodeWithTag("EnduranceButton")
             .assertIsNotEnabled()
+            //.assertIsEnabled()
     }
 
     @Test
     fun checkNumbersDisplayedMatchData() {
         composeTestRule
             .onNodeWithTag("TotalSetsText")
-            .assertTextContains("Total Sets:")
-            .assertTextContains("/ 4")
+            .assertTextContains("Total Sets: 0 / 4")
 
         composeTestRule
             .onNodeWithTag("CompletedExercisesText")
-            .assertTextContains("Completed Exercises:")
-            .assertTextContains("/ 4")
+            .assertTextContains("Completed Exercises: 0 / 4")
    }
 
     @Test
     fun variationOneOfCompletedSetsAndExercises() {
         // Perform actions to complete sets/exercises
-        // Check if the UI has updated accordingly
         // Click on switches/buttons to complete sets
+        composeTestRule
+            //.onAllNodesWithText("SetSwitch").onFirst()
+            //.onNodeWithText("Set 1")
+            //.onNodeWithTag(switchTag)
+            .onNodeWithTag("SetSwitchRunning").performClick()
+        // composeTestRule.onNodeWithTag("SetSwitchSwimming1").performClick()
+        // composeTestRule.onNodeWithTag("SetSwitchCycling1").performClick()
+        // composeTestRule.onNodeWithTag("SetSwitchRunningRowing1").performClick()
+
+        //composeTestRule.onAllNodes(hasTestTagStartingWith("SetSwitch")).onFirst().performClick()
+
+        // Check if the UI has updated accordingly
         // Now check if the UI has updated to reflect the completion
         composeTestRule
             .onNodeWithTag("TotalSetsText")
-            .assertTextContains("Total Sets: 2")
-            // X should be the updated total sets count
+            .assertTextContains("Total Sets: 1 / 4")
 
         composeTestRule
             .onNodeWithTag("CompletedExercisesText")
-            .assertTextContains("Completed Exercises: 2")
-            // Y should be the updated completed exercises count
-
+            .assertTextContains("Completed Exercises: 1 / 4")
     }
-
 }
+
