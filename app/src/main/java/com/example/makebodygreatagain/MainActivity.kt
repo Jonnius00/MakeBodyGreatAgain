@@ -6,6 +6,8 @@ import android.webkit.WebViewClient
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -13,12 +15,16 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Build
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.outlined.ArrowDropDown
 import androidx.compose.material3.Button
@@ -26,6 +32,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
@@ -41,6 +48,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -105,8 +113,16 @@ enum class ExerciseType {
 fun MyLayout(exerciseType: ExerciseType, exercisesState: List<MutableState<Exercise>>, onExerciseTypeChange: (ExerciseType) -> Unit) {
     Scaffold(
         topBar = {
-            TopAppBar(title = { Text(stringResource(id = R.string.top_bar_title),
-                textAlign = TextAlign.Center) })
+            Row(modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp),
+                horizontalArrangement = Arrangement.SpaceEvenly) {
+                AnimatedGifWebView(gifUrl = "https://c.tenor.com/T4fluv4fprIAAAAC/tenor.gif", modifier = Modifier.width(60.dp))
+
+                TopAppBar(title = {
+                    Text(stringResource(id = R.string.top_bar_title),
+                    textAlign = TextAlign.Center) })
+            }
         }
     ) { paddingValues ->
         Column(modifier = Modifier
@@ -118,7 +134,8 @@ fun MyLayout(exerciseType: ExerciseType, exercisesState: List<MutableState<Exerc
                 horizontalArrangement = Arrangement.SpaceEvenly) {
                 Button(
                     onClick = { onExerciseTypeChange(ExerciseType.Endurance) },
-                    modifier = Modifier.testTag("EnduranceButton")
+                    modifier = Modifier
+                        .testTag("EnduranceButton")
                         .width(185.dp),
                     shape = RoundedCornerShape(3.dp),
                     enabled = true
@@ -127,10 +144,11 @@ fun MyLayout(exerciseType: ExerciseType, exercisesState: List<MutableState<Exerc
                 }
                 Button(
                     onClick = { onExerciseTypeChange(ExerciseType.Strength) },
-                    modifier = Modifier.testTag("StrengthButton")
+                    modifier = Modifier
+                        .testTag("StrengthButton")
                         .width(185.dp),
                     shape = RoundedCornerShape(3.dp),
-                    enabled = false  // EnduranceButton is disabled at startup
+                    enabled = true  // EnduranceButton is disabled at startup
                 ) {
                     Text(text = stringResource(id = R.string.exercise_type_strength))
                 }
@@ -140,12 +158,6 @@ fun MyLayout(exerciseType: ExerciseType, exercisesState: List<MutableState<Exerc
             ExerciseList(exerciseState = exercisesState)
 
             Spacer(modifier = Modifier.weight(1f))
-
-            // GIF at the bottom
-            AnimatedGifWebView(
-                modifier = Modifier.scale(0.96F),
-                gifUrl = "https://c.tenor.com/vADKbpqeAtYAAAAd/tenor.gif"
-            )
         }
     }
 }
@@ -215,6 +227,9 @@ fun ExerciseList(exerciseState: List<MutableState<Exercise>>) {
 @Composable
 fun ExerciseCard(exercise: Exercise, onExerciseChanged: (Exercise) -> Unit) {
     var isExpanded by remember { mutableStateOf(exercise.isExpanded) }
+    var isIconVisible by remember { mutableStateOf(true) } // Controls visibility for the animated icon
+    val uriHandler = LocalUriHandler.current
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -227,9 +242,37 @@ fun ExerciseCard(exercise: Exercise, onExerciseChanged: (Exercise) -> Unit) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(8.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(text = exercise.name)
+                // Animated icon to the left of the exercise name
+                AnimatedVisibility(
+                    visible = isIconVisible,
+                    enter = fadeIn(),
+                    exit = fadeOut()
+                ) {
+                    // This is where your animated icon will be
+                    Icon(
+                        imageVector = Icons.Default.FavoriteBorder, // Replace with your preferred icon
+                        contentDescription = "Exercise Icon",
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
+
+                Spacer(modifier = Modifier.width(8.dp)) // Space between icon and text
+
+                // Exercise name and clickable text for URL
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(text = exercise.name)
+                    Text(
+                        text = "Video",
+                        modifier = Modifier.clickable {
+                            uriHandler.openUri("https://uit.no/startsida") // URL you want to open
+                        },
+                    )
+                }
+
+                // Expand/collapse icon button
                 IconButton(onClick = { isExpanded = !isExpanded }) {
                     Icon(
                         imageVector = if (isExpanded) Icons.Outlined.ArrowDropDown else Icons.Filled.KeyboardArrowDown,
@@ -237,12 +280,14 @@ fun ExerciseCard(exercise: Exercise, onExerciseChanged: (Exercise) -> Unit) {
                     )
                 }
             }
+
+            // Expandable content with exercise description and sets
             AnimatedVisibility(visible = isExpanded) {
                 Column(modifier = Modifier.padding(8.dp)) {
                     Text(text = exercise.description)
                     for (i in 1..exercise.sets) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            Text(text = "Set $i")
+                            Text(text = stringResource(id = R.string.set_number, i))
                             Spacer(modifier = Modifier.width(8.dp))
                             Switch(
                                 checked = exercise.setsCompleted >= i,
@@ -253,8 +298,20 @@ fun ExerciseCard(exercise: Exercise, onExerciseChanged: (Exercise) -> Unit) {
                             )
                         }
                     }
+                    // Load the GIF using a WebView for animation
+                    if (exercise.gifUrl.isNotEmpty()) {
+                        AnimatedGifWebView(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(200.dp), // Set a fixed height for the GIF
+                            gifUrl = exercise.gifUrl
+                        )
+                        }
+                    }
                 }
             }
         }
     }
-}
+
+
+
