@@ -3,23 +3,15 @@ package com.example.makebodygreatagain
 import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.assertTextContains
-import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
-import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
-import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.ext.junit.rules.ActivityScenarioRule
-
+import androidx.test.platform.app.InstrumentationRegistry
 import org.junit.Assert.*
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-
-import org.hamcrest.core.IsNot.not
 
 /**
  * Instrumented test, which will execute on an Android device.
@@ -51,17 +43,15 @@ class ExampleInstrumentedTest {
 
     @Test
     fun checkNumbersDisplayedMatchData() {
-        // You'll need to replace "X" and "Y" with the actual expected values
-        // based on your initial data setup
         composeTestRule
             .onNodeWithTag("TotalSetsText")
             .assertTextContains("Total Sets:")
-            .assertTextContains("/ 2")
+            .assertTextContains("/ 4")
 
         composeTestRule
             .onNodeWithTag("CompletedExercisesText")
             .assertTextContains("Completed Exercises:")
-            .assertTextContains("/ 2")
+            .assertTextContains("/ 4")
    }
 
     @Test

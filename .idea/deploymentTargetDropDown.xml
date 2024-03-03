@@ -5,6 +5,15 @@
       <entry key="app">
         <State />
       </entry>
+      <entry key="checkButtonsStateAfterStartup()">
+        <State />
+      </entry>
+      <entry key="checkNumbersDisplayedMatchData()">
+        <State />
+      </entry>
+      <entry key="variationOneOfCompletedSetsAndExercises()">
+        <State />
+      </entry>
     </value>
   </component>
 </project>
